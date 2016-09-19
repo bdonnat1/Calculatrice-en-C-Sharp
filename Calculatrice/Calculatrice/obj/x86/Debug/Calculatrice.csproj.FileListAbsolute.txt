@@ -1,0 +1,7 @@
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\bin\Debug\Calculatrice.exe
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\bin\Debug\Calculatrice.pdb
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.csprojResolveAssemblyReference.cache
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.MainForm.resources
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.csproj.GenerateResource.Cache
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.exe
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.pdb
