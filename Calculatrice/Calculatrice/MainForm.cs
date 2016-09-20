@@ -13,11 +13,14 @@ using System.Windows.Forms;
 
 namespace Calculatrice
 {
+	
 	/// <summary>
 	/// Description of MainForm.
 	/// </summary>
 	public partial class MainForm : Form
 	{
+		double resultatPartiel = 0;
+		bool estEgale = false;
 		public MainForm()
 		{
 			//
@@ -28,7 +31,31 @@ namespace Calculatrice
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			this.KeyPreview = true;
+            this.KeyPress +=
+                new KeyPressEventHandler(MainForm_KeyPress);
 		}
+		
+		// Detecter onpress sur le clavier
+		void MainForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+			//MessageBox.Show("Form.KeyPress: '" + e.KeyChar.ToString() + "' pressed.");
+            if (e.KeyChar >= 48 && e.KeyChar <= 57)
+            {
+            	ajoutDansText(e.KeyChar.ToString());
+           	// Si on touche sur backspace
+            } else if (e.KeyChar == (char)Keys.Back) {
+            	Button4Click(null, null);
+           	// Operateur
+            } else if (e.KeyChar.ToString() == "+" || e.KeyChar.ToString() == "-" || e.KeyChar.ToString() == "*" || e.KeyChar.ToString() == "/") {
+            	ajoutSigne(e.KeyChar.ToString());
+           	// Touche sur entrer
+            } else if (e.KeyChar == (char)Keys.Enter) {
+            	Button12Click(null, null);
+            } else if (e.KeyChar == (char)Keys.Delete) {
+            	Button7Click(null, null);
+            }
+        }
 		
 		// Ajouter un texte dans la zone de texte resultat
 		void ajoutDansText(string valeur) {
@@ -37,15 +64,15 @@ namespace Calculatrice
 				// Si le texte encours est à 0, alors on l'ecrase,
 				// Sinon, on ajouter le nouveau chiffre à l'ancienne
 				if(txtResultat.Text != "0") {
-					// txtegaleState = 1 si l'utilisateur à précédement appuyer sur =
-					// Donc si txtegaleState = 1, alors on ecrase le texte du txtResultat
-					// et on initialise txtegaleState à 0
-					if (txtegaleState.Text == "1") {
+					// estEgale = 1 si l'utilisateur à précédement appuyer sur =
+					// Donc si estEgale = 1, alors on ecrase le texte du txtResultat
+					// et on initialise estEgale à 0
+					if (estEgale == true) {
 						txtResultat.Text = valeur;
-						txtegaleState.Text = "0";
-					// Si le txtResultat = txtResultatPartiel, alors on ecrase le text dans txtResultat
+						estEgale = false;
+					// Si le txtResultat = resultatPartiel, alors on ecrase le text dans txtResultat
 					// ----/---- Celà veu dire que l'utilisateur va ajouter un autre chiffre pour le calcul
-					} else if (txtResultat.Text == txtResultatPartiel.Text) {
+					} else if (double.Parse(txtResultat.Text) == resultatPartiel) {
 						txtResultat.Text = valeur;
 					// Cas si autre
 					} else {
@@ -62,25 +89,8 @@ namespace Calculatrice
 		void ajoutSigne(string signe) {
 			
 			if(IsNumeric(txtResultat.Text)) {
-				// Calcul de l'opération
-				// L'opération se fait à partir du signe ajouter dans txtSigne.
-				if(txtSigne.Text == "+") {
-					double rep = double.Parse(txtResultatPartiel.Text) + double.Parse(txtResultat.Text);
-					txtResultatPartiel.Text = rep.ToString();
-				} else if(txtSigne.Text == "-") {
-					double rep = double.Parse(txtResultatPartiel.Text) - double.Parse(txtResultat.Text);
-					txtResultatPartiel.Text = rep.ToString();
-				} else if(txtSigne.Text == "*") {
-					double rep = double.Parse(txtResultatPartiel.Text) * double.Parse(txtResultat.Text);
-					txtResultatPartiel.Text = rep.ToString();
-				} else if(txtSigne.Text == "/") {
-					// Ici, on initialise le nombre de chiffre après virgule à 6
-					double rep = double.Parse(txtResultatPartiel.Text) / double.Parse(txtResultat.Text);
-					txtResultatPartiel.Text = Math.Round(rep, 6).ToString();
-				} else {
-					txtResultatPartiel.Text = txtResultat.Text;
-				}
-				txtResultat.Text = txtResultatPartiel.Text;
+				// Effectué le calcul
+				calculResultat(double.Parse(txtResultat.Text));
 				
 				
 				if(txtSigne.Text != "" && txtCalcul.Text != "" && txtResultat.Text != "0") {
@@ -89,7 +99,31 @@ namespace Calculatrice
 					txtCalcul.Text += txtResultat.Text;
 				}
 				
+				txtResultat.Text = resultatPartiel.ToString();
+				
 				txtSigne.Text = signe;
+			}
+		}
+		
+		// Calcul de la resultat
+		void calculResultat(double nombre) {
+			// Calcul de l'opération
+			// L'opération se fait à partir du signe ajouter dans txtSigne.
+			if(txtSigne.Text == "+") {
+				double rep = resultatPartiel + nombre;
+				resultatPartiel = rep;
+			} else if(txtSigne.Text == "-") {
+				double rep = resultatPartiel - nombre;
+				resultatPartiel = rep;
+			} else if(txtSigne.Text == "*") {
+				double rep = resultatPartiel * nombre;
+				resultatPartiel = rep;
+			} else if(txtSigne.Text == "/") {
+				// Ici, on initialise le nombre de chiffre après virgule à 6
+				double rep = resultatPartiel / nombre;
+				resultatPartiel = Math.Round(rep, 6);
+			} else {
+				resultatPartiel = nombre;
 			}
 		}
 		
@@ -176,7 +210,7 @@ namespace Calculatrice
 			txtResultat.Text = "0";
 			txtSigne.Text = "";
 			txtCalcul.Text = "";
-			txtResultatPartiel.Text = "0";
+			resultatPartiel = 0;
 		}
 		
 		void Button1Click(object sender, EventArgs e)
@@ -192,12 +226,14 @@ namespace Calculatrice
 		
 		void Button12Click(object sender, EventArgs e)
 		{
-			txtegaleState.Text = "1";
-			ajoutSigne("");
-			txtResultat.Text = txtResultatPartiel.Text;
-			txtSigne.Text = "";
-			txtCalcul.Text = "";
-			txtResultatPartiel.Text = "0";
+			if(IsNumeric(txtResultat.Text)) {
+				estEgale = true;
+				calculResultat(double.Parse(txtResultat.Text));
+				txtResultat.Text = resultatPartiel.ToString();
+				txtSigne.Text = "";
+				txtCalcul.Text = "";
+				resultatPartiel = 0;
+			}
 		}
 		
 		void Button4Click(object sender, EventArgs e)
@@ -214,27 +250,65 @@ namespace Calculatrice
 		void Button5Click(object sender, EventArgs e)
 		{
 			if(IsNumeric(txtResultat.Text)) {
-				txtegaleState.Text = "1";
-				txtResultat.Text = Math.Round((1/double.Parse(txtResultat.Text)), 6).ToString();
+				estEgale = true;
+				calculResultat(double.Parse(txtResultat.Text));
+				txtCalcul.Text = "1 / " + txtResultat.Text;
+				txtResultat.Text = Math.Round((1/resultatPartiel), 6).ToString();
+				txtSigne.Text = "";
+				//txtCalcul.Text = "";
 			}
 		}
 		
 		void Button8Click(object sender, EventArgs e)
 		{
 			if(IsNumeric(txtResultat.Text)) {
-				txtegaleState.Text = "1";
-				txtResultat.Text = Math.Round(Math.Sqrt(double.Parse(txtResultat.Text)),6).ToString();
+				estEgale = true;
+				calculResultat(double.Parse(txtResultat.Text));
+				txtCalcul.Text = "√" + txtResultat.Text;
+				txtResultat.Text = Math.Round(Math.Sqrt(resultatPartiel),6).ToString();
+				txtSigne.Text = "";
+				//txtCalcul.Text = "";
 			}
 		}
 		
 		void Button9Click(object sender, EventArgs e)
 		{
-			/*if(IsNumeric(txtResultat.Text)) {
-				txtegaleState.Text = "1";
-				double nombre = double.Parse(txtResultat.Text);
-				nombre = nombre + (nombre/100);
-				txtResultat.Text = Math.Round(nombre,6).ToString();
-			}*/
+			if(IsNumeric(txtResultat.Text)) {
+				estEgale = true;
+				txtResultat.Text = Math.Round((resultatPartiel*double.Parse(txtResultat.Text)/100),2).ToString();
+				txtSigne.Text = "";
+				txtCalcul.Text = "";
+			}
 		}
+		
+		void Button24Click(object sender, EventArgs e)
+		{
+			if (txtResultat.Text.IndexOf(",") <= 0) {
+				ajoutDansText(",");
+			}
+		}
+		
+		
+		
+		void ScientifiqueToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			Form formulaire = new scientifique();
+			formulaire.Show();
+			this.Hide();
+		}
+		
+		
+		
+		void AProposToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			Form formulaire = new about();
+			formulaire.ShowDialog();
+		}
+		
+		void MainFormLoad(object sender, EventArgs e)
+		{
+			
+		}
+		
 	}
 }

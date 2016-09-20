@@ -5,3 +5,5 @@ D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\o
 D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.csproj.GenerateResource.Cache
 D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.exe
 D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.pdb
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.scientifique.resources
+D:\DOCUMENTS\LECON IFT\C Sharp\Exercice\Calculatrice\Calculatrice\Calculatrice\obj\x86\Debug\Calculatrice.about.resources
